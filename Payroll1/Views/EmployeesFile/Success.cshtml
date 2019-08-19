@@ -1,0 +1,59 @@
+﻿@model Payroll1.Models.UploadFile
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Success</title>
+    <style type="text/css">
+        #tblExcel {
+            width: 1000px;
+            border: none;
+            background-color: #000000;
+        }
+
+        .tdColumnHeader {
+            padding: 2px 2px 2px 2px;
+            text-align: center;
+            font-family: Verdana;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: cornflowerblue;
+            color: #FFFFFF;
+        }
+
+        .tdCellData {
+            padding: 2px 2px 2px 2px;
+            font-family: Verdana;
+            font-size: 12px;
+            background-color: aqua;
+            color: #000000;
+        }
+    </style>
+ 
+</head>
+<body>
+    <h3>List of Employees</h3>
+    <table cellpadding="2" cellspacing="2" border="1">
+        <tr>
+            <th>Date</th>
+            <th>Hours Worked</th>
+            <th>Employee ID</th>
+            <th>Job Group</th>
+        </tr>
+        @foreach (var emp in ViewBag.ListEmployees)
+        {
+        <tr>
+            <td>@emp._date</td>
+            <td>@emp.HoursWorked</td>
+            <td>@emp._empID</td>
+            <td>@emp.JobGroup</td>
+        </tr>
+        }
+    </table>
+</body>
+</html>

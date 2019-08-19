@@ -1,0 +1,74 @@
+create a PDF file from the data and export it using Crystal Reports in MVC.NET.
+
+Prerequisites
+    Visual Studio
+    SQL Server 
+    Crystal Report
+
+*/DB - Employees table
+
+CREATE TABLE Employee (
+    EmployeeID int,
+    PayPeriod date,
+    HoursWorked int,
+    AmountPaid int  
+);
+
+//Create a method in controller
+
+
+    using CrystalDecisions.CrystalReports.Engine;  
+    using System;  
+    using System.Collections.Generic;  
+    using System.Data;  
+    using System.IO;  
+    using System.Linq;  
+    using System.Text.RegularExpressions;  
+    using System.Web;  
+    using System.Web.Mvc;  
+    using System.Xml.Linq;  
+    using temp.Models;  
+      
+    namespace temp.Controllers  
+    {  
+        public class HomeController : Controller  
+        {  
+            public ActionResult Index()  
+            {  
+                return View();  
+            }  
+      
+            public ActionResult Download_PDF()  
+            {  
+                EmployeeEntities context = new EmployeeEntities();  
+      
+                ReportDocument rd = new ReportDocument();  
+                rd.Load(Path.Combine(Server.MapPath("~/Report"), "Employee_Data.rpt"));  
+                rd.SetDataSource(context.Employee_table.Select(emp => new  
+                {  
+                     EmployeeID = emp.EmployeeID,
+   					 PayPeriod = emp.PayPeriod,
+   					 HoursWorked = emp.HoursWorked,
+    				 AmountPaid = emp.AmountPaid 
+                }).ToList());  
+      
+                Response.Buffer = false;  
+                Response.ClearContent();  
+                Response.ClearHeaders();  
+      
+      
+                rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Landscape;  
+                rd.PrintOptions.ApplyPageMargins(new CrystalDecisions.Shared.PageMargins(5, 5, 5, 5));  
+                rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA5;  
+      
+                Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);  
+                stream.Seek(0, SeekOrigin.Begin);  
+      
+                return File(stream, "application/pdf", "EmployeesList.pdf");  
+            }  
+      
+        }  
+    }  
+
+//Call the method of Download_PDF from the view side
+    <a href="Report/Download_PDF/" target="_blank" class="btn btn-primary" style="margin-top:20px;">Download_PDF</a> 
